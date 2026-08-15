@@ -1,0 +1,13 @@
+//
+// Created by Dmitri on 2026-08-15.
+//
+
+#ifndef GLOBAL_MARITIME_GLOBEGENERATOR_H
+#define GLOBAL_MARITIME_GLOBEGENERATOR_H
+
+
+class GlobeGenerator {
+};
+
+
+#endif //GLOBAL_MARITIME_GLOBEGENERATOR_H

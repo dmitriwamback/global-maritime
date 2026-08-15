@@ -9,7 +9,19 @@ find_package(Qt6 REQUIRED COMPONENTS
     OpenGLWidgets
 )
 
-qt_add_executable(global_maritime main.cpp)
+qt_add_executable(global_maritime main.cpp
+        src/widgets/GlobeViewer.cpp
+        src/widgets/GlobeViewer.h
+        src/core/shader/Shader.cpp
+        src/core/shader/Shader.h
+        src/core/shader/ShaderSources.cpp
+        src/core/shader/ShaderSources.h
+        src/core/texture/Texture.cpp
+        src/core/texture/Texture.h
+        src/core/objects/GlobeGenerator.cpp
+        src/core/objects/GlobeGenerator.h
+        src/core/objects/Camera.cpp
+        src/core/objects/Camera.h)
 
 target_link_libraries(global_maritime PRIVATE
     Qt6::Widgets
