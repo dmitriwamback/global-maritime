@@ -16,11 +16,9 @@ int main(int argc, char *argv[]) {
     auto* globeViewerWidget = new GlobeViewer();
     auto* centralWidget = new QWidget();
     auto* layout = new QHBoxLayout(centralWidget);
-    auto* testButton = new QPushButton("hello");
 
     globeViewerWidget->resize(100, 100);
     layout->addWidget(globeViewerWidget);
-    layout->addWidget(testButton);
 
     window.setCentralWidget(centralWidget);
 
