@@ -15,6 +15,9 @@ Globe::Globe(uint32_t latitudeSegments, uint32_t longitudeSegments) {
 
 void Globe::Generate() {
 
+    physicalGeographyTexture = Texture();
+    physicalGeographyTexture.Load("/Users/dmitri/Documents/working/global-maritime/res/NASA_Earth_Physical_Geography.png");
+
     constexpr float pi = 3.14159265358979323846f;
 
     vertices.clear();
@@ -34,7 +37,12 @@ void Globe::Generate() {
             vertex.y = sin(latitude);
             vertex.z = cos(latitude) * sin(longitude);
 
-            vertex.u = u;
+            glm::vec3 direction = glm::normalize(glm::vec3(vertex.x, vertex.y, vertex.z));
+            vertex.nx = direction.x;
+            vertex.ny = direction.y;
+            vertex.nz = direction.z;
+
+            vertex.u = 1.0f - u;
             vertex.v = 1.0f - v;
             vertices.push_back(vertex);
         }
@@ -77,7 +85,10 @@ void Globe::Generate() {
     GL->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, x)));
 
     GL->glEnableVertexAttribArray(1);
-    GL->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, u)));
+    GL->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, nx)));
+
+    GL->glEnableVertexAttribArray(2);
+    GL->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, u)));
 
     GL->glBindVertexArray(0);
 }
@@ -95,6 +106,8 @@ void Globe::Render() const {
     auto *GL = QOpenGLContext::currentContext()->extraFunctions();
 
     GL->glBindVertexArray(vertexArrayObject);
+    physicalGeographyTexture.Bind();
+
     GL->glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     GL->glBindVertexArray(0);
 }

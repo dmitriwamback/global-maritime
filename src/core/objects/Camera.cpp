@@ -13,8 +13,8 @@ Camera::Camera() {
 }
 
 void Camera::Update() {
-    position = glm::vec3(2 * sin(debugTime), 0.0f, 2 * cos(debugTime));
-    debugTime += 0.01f;
+    position = glm::vec3(1.5f * sin(debugTime), 0.5f, 1.5f * cos(debugTime));
+    debugTime -= 0.0025f;
 }
 
 glm::mat4 Camera::GetProjectionMatrix(float aspectRatio) {
