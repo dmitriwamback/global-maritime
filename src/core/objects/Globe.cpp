@@ -16,7 +16,7 @@ Globe::Globe(uint32_t latitudeSegments, uint32_t longitudeSegments) {
 void Globe::Generate() {
 
     physicalGeographyTexture = Texture();
-    physicalGeographyTexture.Load("/Users/dmitri/Documents/working/global-maritime/res/NASA_Earth_Physical_Geography.png");
+    physicalGeographyTexture.Load("../res/NASA_Earth_Physical_Geography.png");
 
     constexpr float pi = 3.14159265358979323846f;
 

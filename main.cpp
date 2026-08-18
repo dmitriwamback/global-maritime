@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QMainWindow window;
 
-    window.setWindowTitle("Hello World");
+    window.setWindowTitle("Global Maritime");
     window.resize(1200, 800);
 
     auto* globeViewerWidget = new GlobeViewer();
