@@ -1,6 +1,26 @@
-# Global Maritime App using QT and C++
+# Global Maritime Incident App
+
+<p>C++ and Qt application which displays a 3D globe Earth and maritime incidents displayed by spheres on the surface of the Earth.</p>
+<p>The globe, country borders, country geometries, and incidents are rendered in OpenGL as a part of Qt's OpenGL-specific widgets.</p>
+
+### Features
+
+<ul>
+    <li>Ability to rotate the camera around the Earth.</li>
+    <li>Select an incident and display its relevant information.</li>
+    <li>Select countries whose ships were reported on/countries of origin where the orchestrators of the attack were.</li>
+</ul>
+
+### Technologies and APIs
+
+<ul>
+    <li>C++ and Qt (UI + widgets)</li>
+    <li>OpenGL (visualize the Earth, render borders, and compute lighting calculations)</li>
+    <li>GDELT API to retrieve the maritime incidents</li>
+</ul>
 
 ### Sample Images (as of August 23rd 2026)
+<p>(Only borders/user-driven camera rotation were implemented at this time)</p>
 
 <img width="1162" height="769" alt="Image" src="https://github.com/user-attachments/assets/d136cc7d-404f-4ce2-b8c5-d0f5e2cb54a0" />
 

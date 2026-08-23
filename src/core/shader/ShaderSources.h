@@ -43,12 +43,15 @@ public:
         vec3 lightPosition = vec3(10000.0, 0.0, 0.0);
 
         void main() {
+
+            lightPosition = 10000.0 * vec3(sin(0), 0.0, cos(0));
+
             vec3 physical = texture(globeTexture, uv).rgb;
             float luminance = dot(physical, vec3(0.299, 0.587, 0.114));
 
             vec3 L = normalize(lightPosition - fragp);
 
-            float diffuse = max(dot(normal, L), 0.2);
+            float diffuse = max(dot(normal, L), 0.1);
 
             physical = mix(vec3(luminance), physical, 0.5);
             fragc = vec4(physical * diffuse, 1.0);
