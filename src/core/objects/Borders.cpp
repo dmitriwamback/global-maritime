@@ -16,7 +16,7 @@
 
 static glm::vec3 GeoToSphere(double latitude, double longitude) {
     constexpr double PI = 3.14159265358979323846;
-    constexpr float RADIUS = 500.002f;
+    constexpr float RADIUS = 500.2f;
 
     const double lat = (latitude - 0.5f) * PI / 180.0;
     const double lon = -longitude * PI / 180.0;

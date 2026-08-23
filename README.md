@@ -1,4 +1,4 @@
-# Global Maritime Incident App
+# Global Maritime Incident Geospatial Intelligence
 
 <p>C++ and Qt application which displays a 3D globe Earth and maritime incidents displayed by spheres on the surface of the Earth.</p>
 <p>The globe, country borders, country geometries, and incidents are rendered in OpenGL as a part of Qt's OpenGL-specific widgets.</p>
