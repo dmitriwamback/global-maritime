@@ -13,7 +13,7 @@ Camera::Camera() {
 }
 
 void Camera::Update() {
-    position = glm::vec3(680.5f * sin(debugTime), 0.5f, 680.5f * cos(debugTime));
+    position = glm::vec3(780.5f * sin(debugTime), 0.5f, 780.5f * cos(debugTime));
     debugTime += 0.0025f;
 }
 
