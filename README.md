@@ -19,6 +19,12 @@
     <li>GDELT API to retrieve the maritime incidents</li>
 </ul>
 
+### Resources:
+<ul>
+    <li><a href="https://datahub.io/core/geo-countries">World geojson</a></li>
+    <li><a href="https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/">NASA Physical Geography Map</a></li>
+</ul>
+
 ### Sample Images (as of August 23rd 2026)
 <p>(Only borders/user-driven camera rotation were implemented at this time)</p>
 
