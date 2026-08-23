@@ -7,14 +7,14 @@
 
 
 Camera::Camera() {
-    position = glm::vec3(0.0f, 0.0f, 2.0f);
+    position = glm::vec3(580.0f, 0.0f, 0.0f);
     lookAt = glm::vec3(0.0f, 0.0f, 0.0f);
     up = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
 void Camera::Update() {
-    position = glm::vec3(1.5f * sin(debugTime), 0.5f, 1.5f * cos(debugTime));
-    debugTime -= 0.0025f;
+    position = glm::vec3(680.5f * sin(debugTime), 0.5f, 680.5f * cos(debugTime));
+    debugTime += 0.0025f;
 }
 
 glm::mat4 Camera::GetProjectionMatrix(float aspectRatio) {

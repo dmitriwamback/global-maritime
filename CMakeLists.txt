@@ -22,7 +22,11 @@ qt_add_executable(global_maritime main.cpp
         src/core/objects/Globe.cpp
         src/core/objects/Globe.h
         src/core/objects/Camera.cpp
-        src/core/objects/Camera.h)
+        src/core/objects/Camera.h
+        src/core/objects/Borders.cpp
+        src/core/objects/Borders.h
+        src/core/objects/CountryPolygons.cpp
+        src/core/objects/CountryPolygons.h)
 
 target_link_libraries(global_maritime PRIVATE
     Qt6::Widgets

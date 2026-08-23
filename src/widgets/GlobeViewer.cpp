@@ -25,8 +25,16 @@ void GlobeViewer::initializeGL() {
 
     globe = Globe();
     globe.Generate();
+
+    borders = Borders();
+    borders.Load("../res/world.geojson");
+    borders.Initialize();
+
     globeShader = Shader();
-    globeShader.Create(ShaderSources::VERTEX_SHADER_SOURCE, ShaderSources::FRAGMENT_SHADER_SOURCE);
+    globeShader.Create(ShaderSources::GLOBE_VERTEX_SHADER_SOURCE, ShaderSources::GLOBE_FRAGMENT_SHADER_SOURCE);
+
+    borderShader = Shader();
+    borderShader.Create(ShaderSources::BORDER_VERTEX_SHADER_SOURCE, ShaderSources::BORDER_FRAGMENT_SHADER_SOURCE);
 }
 
 void GlobeViewer::paintGL() {
@@ -41,8 +49,13 @@ void GlobeViewer::paintGL() {
 
     globeShader.SetMat4("projection", projectionMatrix);
     globeShader.SetMat4("lookAt", lookAtMatrix);
-
     globe.Render();
+
+    borderShader.Bind();
+    borderShader.SetMat4("projection", projectionMatrix);
+    borderShader.SetMat4("lookAt", lookAtMatrix);
+
+    borders.Render();
 }
 
 void GlobeViewer::resizeGL(int width, int height) {

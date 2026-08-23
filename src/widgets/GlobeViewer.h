@@ -8,6 +8,7 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 
+#include "../core/objects/Borders.h"
 #include "../core/objects/Globe.h"
 #include "../core/objects/Camera.h"
 
@@ -21,7 +22,8 @@ protected:
     void resizeGL(int width, int height) override;
 private:
     Globe globe;
-    Shader globeShader;
+    Borders borders;
+    Shader globeShader, borderShader;
     Camera camera;
     float aspectRatio = 1;
 };

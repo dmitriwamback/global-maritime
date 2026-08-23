@@ -8,7 +8,7 @@
 
 class ShaderSources {
 public:
-    static constexpr const char* VERTEX_SHADER_SOURCE = R"(
+    static constexpr const char* GLOBE_VERTEX_SHADER_SOURCE = R"(
         #version 330 core
 
         layout(location = 0) in vec3 position;
@@ -30,7 +30,7 @@ public:
         }
     )";
 
-    static constexpr const char* FRAGMENT_SHADER_SOURCE = R"(
+    static constexpr const char* GLOBE_FRAGMENT_SHADER_SOURCE = R"(
         #version 330 core
 
         in vec2 uv;
@@ -40,7 +40,7 @@ public:
         uniform sampler2D globeTexture;
         out vec4 fragc;
 
-        vec3 lightPosition = vec3(10.0);
+        vec3 lightPosition = vec3(10000.0, 0.0, 0.0);
 
         void main() {
             vec3 physical = texture(globeTexture, uv).rgb;
@@ -52,6 +52,33 @@ public:
 
             physical = mix(vec3(luminance), physical, 0.5);
             fragc = vec4(physical * diffuse, 1.0);
+        }
+    )";
+
+
+
+
+
+    static constexpr const char* BORDER_VERTEX_SHADER_SOURCE = R"(
+        #version 330 core
+
+        layout(location = 0) in vec3 position;
+
+        uniform mat4 lookAt;
+        uniform mat4 projection;
+
+        void main() {
+            gl_Position = projection * lookAt * vec4(position, 1.0);
+        }
+    )";
+
+    static constexpr const char* BORDER_FRAGMENT_SHADER_SOURCE = R"(
+        #version 330 core
+
+        out vec4 fragc;
+
+        void main() {
+            fragc = vec4(1.0);
         }
     )";
 };

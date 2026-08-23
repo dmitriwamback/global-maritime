@@ -20,6 +20,8 @@ void Globe::Generate() {
 
     constexpr float pi = 3.14159265358979323846f;
 
+    float radius = 500.0f;
+
     vertices.clear();
     indices.clear();
 
@@ -33,9 +35,9 @@ void Globe::Generate() {
             float longitude = (u - 0.5f) * pi * 2;
 
             Vertex vertex{};
-            vertex.x = cos(latitude) * cos(longitude);
-            vertex.y = sin(latitude);
-            vertex.z = cos(latitude) * sin(longitude);
+            vertex.x = cos(latitude) * cos(longitude) * radius;
+            vertex.y = sin(latitude) * radius;
+            vertex.z = cos(latitude) * sin(longitude) * radius;
 
             glm::vec3 direction = glm::normalize(glm::vec3(vertex.x, vertex.y, vertex.z));
             vertex.nx = direction.x;

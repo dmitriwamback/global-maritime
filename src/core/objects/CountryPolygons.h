@@ -1,0 +1,13 @@
+//
+// Created by Dmitri on 2026-08-23.
+//
+
+#ifndef GLOBAL_MARITIME_COUNTRYPOLYGONS_H
+#define GLOBAL_MARITIME_COUNTRYPOLYGONS_H
+
+
+class CountryPolygons {
+};
+
+
+#endif //GLOBAL_MARITIME_COUNTRYPOLYGONS_H
