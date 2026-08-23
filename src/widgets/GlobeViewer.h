@@ -20,12 +20,18 @@ protected:
     void initializeGL() override;
     void paintGL() override;
     void resizeGL(int width, int height) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 private:
     Globe globe;
     Borders borders;
     Shader globeShader, borderShader;
     Camera camera;
     float aspectRatio = 1;
+
+    QPoint lastMousePosition;
 };
 
 

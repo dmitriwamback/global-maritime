@@ -7,6 +7,9 @@
 #include <iostream>
 #include <QTimer>
 
+#include <QMouseEvent>
+#include <QWheelEvent>
+
 #include "../core/shader/ShaderSources.h"
 
 GlobeViewer::GlobeViewer() {
@@ -61,4 +64,32 @@ void GlobeViewer::paintGL() {
 void GlobeViewer::resizeGL(int width, int height) {
     aspectRatio = (float)width / (float)height;
     glViewport(0, 0, width, height);
+}
+
+void GlobeViewer::mousePressEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        lastMousePosition = event->position().toPoint();
+    }
+}
+
+void GlobeViewer::mouseMoveEvent(QMouseEvent* event) {
+
+    if (!(event->buttons() & Qt::LeftButton)) {
+        return;
+    }
+
+    QPoint currentMousePosition = event->position().toPoint();
+    QPoint delta = currentMousePosition - lastMousePosition;
+
+    lastMousePosition = currentMousePosition;
+
+    float sensitivity = 0.001f;
+
+    camera.Rotate(-delta.x() * sensitivity, delta.y() * sensitivity);
+}
+
+void GlobeViewer::wheelEvent(QWheelEvent* event) {
+    const float delta = static_cast<float>(event->angleDelta().y());
+    camera.Zoom(delta);
+    update();
 }

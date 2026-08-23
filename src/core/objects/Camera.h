@@ -10,17 +10,24 @@
 
 class Camera {
 private:
-    glm::vec3 position, lookAt, up;
-    float debugTime;
+    glm::vec3 position;
+    glm::vec3 lookAt;
+    glm::vec3 up;
+
+    float yaw;
+    float pitch;
+    float distance;
 
 public:
     Camera();
+
     void Update();
+
+    void Rotate(float deltaYaw, float deltaPitch);
+    void Zoom(float delta);
 
     glm::mat4 GetProjectionMatrix(float aspectRatio);
     glm::mat4 GetLookAtMatrix();
-    //glm::vec3 GetPosition();
 };
-
 
 #endif //GLOBAL_MARITIME_CAMERA_H
