@@ -83,7 +83,21 @@ void GlobeViewer::mouseMoveEvent(QMouseEvent* event) {
 
     lastMousePosition = currentMousePosition;
 
-    float sensitivity = 0.001f;
+    float sensitivityMax = 0.003f;
+    float sensitivityMin = 0.0000265f;
+
+    float currentCameraDistance = camera.GetDistance();
+
+    // f(ZOOM_MIN) = sensitivityMin
+    // f(ZOOM_MAX) = sensitivityMax
+    // f(x) takes the linear form y = mx + b
+    float dx = camera.ZOOM_MAX - camera.ZOOM_MIN;
+    float dy = sensitivityMax - sensitivityMin;
+    float slope = dy/dx;
+
+    float b = sensitivityMax - slope * camera.ZOOM_MAX;
+
+    float sensitivity = (camera.GetDistance() * slope + b);
 
     camera.Rotate(-delta.x() * sensitivity, delta.y() * sensitivity);
 }

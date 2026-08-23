@@ -33,6 +33,18 @@ glm::mat4 Camera::GetLookAtMatrix() {
     return glm::lookAt(position, lookAt, up);
 }
 
+float Camera::GetDistance() {
+    return distance;
+}
+
+float Camera::GetYaw() {
+    return yaw;
+}
+
+float Camera::GetPitch() {
+    return pitch;
+}
+
 void Camera::Rotate(float deltaYaw, float deltaPitch) {
     yaw += deltaYaw;
     pitch += deltaPitch;
@@ -41,5 +53,5 @@ void Camera::Rotate(float deltaYaw, float deltaPitch) {
 
 void Camera::Zoom(float delta) {
     distance -= delta;
-    distance = glm::clamp(distance, 505.0f, 1000.0f);
+    distance = glm::clamp(distance, ZOOM_MIN, ZOOM_MAX);
 }

@@ -28,6 +28,12 @@ public:
 
     glm::mat4 GetProjectionMatrix(float aspectRatio);
     glm::mat4 GetLookAtMatrix();
+    float GetDistance();
+    float GetYaw();
+    float GetPitch();
+
+    float ZOOM_MAX = 1000.0f;
+    float ZOOM_MIN = 505.0f;
 };
 
 #endif //GLOBAL_MARITIME_CAMERA_H
