@@ -26,7 +26,8 @@ qt_add_executable(global_maritime main.cpp
         src/core/objects/Borders.cpp
         src/core/objects/Borders.h
         src/core/objects/CountryPolygons.cpp
-        src/core/objects/CountryPolygons.h)
+        src/core/objects/CountryPolygons.h
+        src/core/util/math.h)
 
 target_link_libraries(global_maritime PRIVATE
     Qt6::Widgets

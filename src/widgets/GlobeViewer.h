@@ -11,6 +11,7 @@
 #include "../core/objects/Borders.h"
 #include "../core/objects/Globe.h"
 #include "../core/objects/Camera.h"
+#include "../core/objects/CountryPolygons.h"
 
 
 class GlobeViewer : public QOpenGLWidget, protected QOpenGLFunctions {
@@ -32,6 +33,7 @@ private:
     float aspectRatio = 1;
 
     QPoint lastMousePosition;
+    CountryPolygons USA;
 };
 
 

@@ -5,9 +5,6 @@
 #ifndef GLOBAL_MARITIME_BORDERS_H
 #define GLOBAL_MARITIME_BORDERS_H
 
-
-#pragma once
-
 #include <vector>
 #include <cstdint>
 
@@ -16,7 +13,7 @@
 #include <QString>
 
 #include <glm/glm.hpp>
-
+#include "../util/math.h"
 
 struct BorderLine {
     std::vector<glm::vec3> vertices;

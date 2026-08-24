@@ -34,6 +34,10 @@ void GlobeViewer::initializeGL() {
     borders.Load("../res/world.geojson");
     borders.Initialize();
 
+    USA = CountryPolygons();
+    USA.Load("../res/world.geojson", "Somalia");
+    USA.Initialize();
+
     globeShader = Shader();
     globeShader.Create(ShaderSources::GLOBE_VERTEX_SHADER_SOURCE, ShaderSources::GLOBE_FRAGMENT_SHADER_SOURCE);
 
@@ -71,6 +75,7 @@ void GlobeViewer::paintGL() {
     borderShader.SetMat4("model", borderModelMatrix);
 
     borders.Render();
+    USA.Render();
 }
 
 void GlobeViewer::resizeGL(int width, int height) {
