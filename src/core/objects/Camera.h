@@ -32,7 +32,7 @@ public:
     float GetYaw();
     float GetPitch();
 
-    float ZOOM_MAX = 1000.0f;
+    float ZOOM_MAX = 2000.0f;
     float ZOOM_MIN = 505.0f;
 };
 

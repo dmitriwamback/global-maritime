@@ -44,7 +44,10 @@ public:
 
         void main() {
 
-            lightPosition = 10000.0 * vec3(sin(0), 0.0, cos(0));
+            float angle = 135.0;
+            float angleRad = angle * 3.14159265 / 180.0;
+
+            lightPosition = 10000.0 * vec3(sin(angleRad), 0.0, cos(angleRad));
 
             vec3 physical = texture(globeTexture, uv).rgb;
             float luminance = dot(physical, vec3(0.299, 0.587, 0.114));
@@ -53,7 +56,7 @@ public:
 
             float diffuse = max(dot(normal, L), 0.1);
 
-            physical = mix(vec3(luminance), physical, 0.5);
+            physical = mix(vec3(luminance), physical, 0.6);
             fragc = vec4(physical * diffuse, 1.0);
         }
     )";

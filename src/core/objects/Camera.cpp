@@ -26,7 +26,7 @@ void Camera::Update() {
 }
 
 glm::mat4 Camera::GetProjectionMatrix(float aspectRatio) {
-    return glm::perspective(90.0f * glm::pi<float>()/180.0f, aspectRatio, 0.1f, 1500.0f );
+    return glm::perspective(30.0f * glm::pi<float>()/180.0f, aspectRatio, 0.1f, 2500.0f );
 }
 
 glm::mat4 Camera::GetLookAtMatrix() {
