@@ -35,7 +35,7 @@ void GlobeViewer::initializeGL() {
     borders.Initialize();
 
     USA = CountryPolygons();
-    USA.Load("../res/world.geojson", "Somalia");
+    USA.Load("../res/world.geojson", "United States of America");
     USA.Initialize();
 
     globeShader = Shader();
