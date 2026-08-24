@@ -31,11 +31,17 @@ public:
     void Initialize();
     void Render() const;
 
+    float MIN_RADIUS = 500.01f;
+    float MAX_RADIUS = 503.0f;
+
+    void SetRadius(float radius);
+
 private:
     void ParseGeometry(const QJsonObject& geometry);
     void ParseLineString(const QJsonArray& coordinates);
 
     std::vector<BorderLine> lines;
+    float radius = 500.01f;
 };
 
 #endif //GLOBAL_MARITIME_BORDERS_H

@@ -8,7 +8,7 @@
 <ul>
     <li>Ability to rotate the camera around the Earth.</li>
     <li>Select an incident and display its relevant information.</li>
-    <li>Select countries whose ships were reported on/countries of origin where the orchestrators of the attack were.</li>
+    <li>Select countries whose ships were had their flag on/countries of origin where the orchestrators of the attack were.</li>
 </ul>
 
 ### Technologies and APIs

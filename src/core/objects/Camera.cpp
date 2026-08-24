@@ -13,7 +13,7 @@ Camera::Camera() {
 
     yaw = 0.0f;
     pitch = 0.0f;
-    distance = 780.0f;
+    distance = ZOOM_MAX;
 }
 
 void Camera::Update() {

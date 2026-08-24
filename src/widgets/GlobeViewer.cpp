@@ -9,6 +9,7 @@
 
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "../core/shader/ShaderSources.h"
 
@@ -54,9 +55,20 @@ void GlobeViewer::paintGL() {
     globeShader.SetMat4("lookAt", lookAtMatrix);
     globe.Render();
 
+    float dy = borders.MAX_RADIUS - borders.MIN_RADIUS;
+    float dx = camera.ZOOM_MAX - camera.ZOOM_MIN;
+
+    float slope = dy/dx;
+    float b = borders.MAX_RADIUS - camera.ZOOM_MAX * slope;
+
+    float radius = slope * camera.GetDistance() + b;
+
+    glm::mat4 borderModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(radius));
+
     borderShader.Bind();
     borderShader.SetMat4("projection", projectionMatrix);
     borderShader.SetMat4("lookAt", lookAtMatrix);
+    borderShader.SetMat4("model", borderModelMatrix);
 
     borders.Render();
 }
@@ -83,8 +95,8 @@ void GlobeViewer::mouseMoveEvent(QMouseEvent* event) {
 
     lastMousePosition = currentMousePosition;
 
-    float sensitivityMax = 0.003f;
-    float sensitivityMin = 0.0000265f;
+    float sensitivityMax = 0.00245f;
+    float sensitivityMin = 0.0000065f;
 
     float currentCameraDistance = camera.GetDistance();
 
