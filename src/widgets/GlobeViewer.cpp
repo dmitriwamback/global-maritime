@@ -75,7 +75,7 @@ void GlobeViewer::paintGL() {
     borderShader.SetMat4("model", borderModelMatrix);
 
     borders.Render();
-    USA.Render();
+    //USA.Render();
 }
 
 void GlobeViewer::resizeGL(int width, int height) {
