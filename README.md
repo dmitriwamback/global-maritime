@@ -51,7 +51,7 @@
 
 <p>The borders do not require any depth texture since we will render the border to a texture that are pointing perpendicular or in the direction of the camera. Rendering this way will neglect the borders rendering on the other side of the planet.</p>
 
-<p>To calculate whether the borders are pointing perpendicular otr towards the camera we can use the following: <code>dot(cameraDirection, borderNormal) >= 0</code> where <code>borderNormal = normalize(borderVertex)</code>. The preceding negates all the geometry physically behind the planet model, removing the need to compute a separate border depth texture.</p>
+<p>To calculate whether the borders are pointing perpendicular or towards the camera we can use the following: <code>dot(cameraDirection, borderNormal) >= 0</code> where <code>borderNormal = normalize(borderVertex)</code>. The preceding negates all the geometry physically behind the planet model, removing the need to compute a separate border depth texture.</p>
 
 <p>In the shader, there will be a <code>vec4 composite</code> which will be responsible to compute the final color of the scene. Initially, the composite variable will be computed as such: <code>composite = mix(borderColor, earthColor, borderColor.a)</code>. This will always confirm that the borders are being rendered above the earth, resulting in zero z-fighting.</p>
 
