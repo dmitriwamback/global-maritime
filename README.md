@@ -45,7 +45,7 @@
 
 ### Alternative method to combatting the z-fighting problem:
 
-<p>As shown in the image above, the values ε0, ε1, ε2, and ε3 demonstrate the distances between the borders and coastlines of Oman, Yemen, Somalia, and Iran respectively. This is due to scaling the radius of the borders as the camera distances itself from the earth model</p>
+<p>As shown in the image above, the values ε0, ε1, ε2, and ε3 demonstrate the distances between the borders and coastlines of Oman, Yemen, Somalia, and Iran respectively. This is due to scaling the radius of the borders as the camera distances itself from the Earth model.</p>
 
 <p>Thus comes a method where the borders and Earth are rendered separately to individual textures, with the borders having only <code>borderTexture</code> and the Earth having both <code>earthTexture</code> and <code>earthDepthTexture</code>.</p> 
 
