@@ -92,7 +92,7 @@ public:
 
         void main() {
             vec3 norm = normalize(fragp);
-            if (dot(norm, normalize(cameraDirection)) >= 0.2) {
+            if (dot(norm, normalize(cameraDirection - fragp)) >= 0.0) {
                 fragc = vec4(1.0);
             }
             else {
@@ -129,7 +129,7 @@ public:
             vec3 earthColor = texture(earthTexture, uv).rgb;
             vec4 borderColor = texture(borderTexture, uv);
 
-            vec3 composite = mix(earthColor, borderColor.rgb, borderColor.a);
+            vec3 composite = earthColor + borderColor.rgb * 1.5;
             fragc = vec4(composite, 1.0);
         }
     )";

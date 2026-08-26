@@ -22,6 +22,13 @@ private:
     uint32_t framebufferId = 0;
     uint32_t depthBufferId = 0;
     uint32_t colorTextureId = 0;
+
+    uint32_t msaaFramebufferId = 0;
+    uint32_t msaaDepthBufferId = 0;
+    uint32_t msaaColorBufferId = 0;
+
+    int _width = 1200;
+    int _height = 800;
 };
 
 

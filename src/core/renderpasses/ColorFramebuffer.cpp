@@ -18,7 +18,7 @@ void ColorFramebuffer::Initialize() {
     gl->glGenTextures(1, &colorTextureId);
     gl->glBindTexture(GL_TEXTURE_2D, colorTextureId);
 
-    gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1200, 800, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -29,12 +29,33 @@ void ColorFramebuffer::Initialize() {
 
     gl->glGenRenderbuffers(1, &depthBufferId);
     gl->glBindRenderbuffer(GL_RENDERBUFFER, depthBufferId);
-    gl->glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 1200, 800);
+    gl->glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, _width, _height);
 
     gl->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferId);
 
     if (gl->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "Framebuffer is not complete!" << std::endl;
+    }
+
+
+
+    gl->glGenFramebuffers(1, &msaaFramebufferId);
+    gl->glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebufferId);
+
+    gl->glGenRenderbuffers(1, &msaaColorBufferId);
+    gl->glBindRenderbuffer(GL_RENDERBUFFER, msaaColorBufferId);
+
+    gl->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, _width, _height);
+    gl->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaColorBufferId);
+
+    gl->glGenRenderbuffers(1, &msaaDepthBufferId);
+    gl->glBindRenderbuffer(GL_RENDERBUFFER, msaaDepthBufferId);
+
+    gl->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT24, _width, _height);
+    gl->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, msaaDepthBufferId);
+
+    if (gl->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cerr << "MSAA Framebuffer is not complete!" << std::endl;
     }
 
     gl->glBindTexture(GL_TEXTURE_2D, 0);
@@ -44,11 +65,17 @@ void ColorFramebuffer::Initialize() {
 
 void ColorFramebuffer::Bind() {
     auto* gl = QOpenGLContext::currentContext()->extraFunctions();
-    gl->glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+    gl->glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebufferId);
 }
 
 void ColorFramebuffer::Unbind() {
     auto* gl = QOpenGLContext::currentContext()->extraFunctions();
+
+    gl->glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFramebufferId);
+    gl->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebufferId);
+
+    gl->glBlitFramebuffer(0, 0, _width, _height, 0, 0, _width, _height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
     gl->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -57,6 +84,10 @@ uint32_t ColorFramebuffer::GetColorTextureId() {
 }
 
 void ColorFramebuffer::Update(int width, int height) {
+
+    _width = width;
+    _height = height;
+
     auto* gl = QOpenGLContext::currentContext()->extraFunctions();
 
     gl->glBindTexture(GL_TEXTURE_2D, colorTextureId);
