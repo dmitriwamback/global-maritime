@@ -59,3 +59,6 @@
 
 <p>The composite can thus be calculated as <code>composite = sceneDepth < earthDepth ? sceneColor : composite;</code>.</p>
 
+## MSAA Multisampling + Alternative Method Results (Aug 26):
+
+<img width="1175" height="773" alt="Image" src="https://github.com/user-attachments/assets/71a5c4d8-472f-45ff-97bc-7b12bb0045af" />
