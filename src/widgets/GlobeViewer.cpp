@@ -132,7 +132,7 @@ void GlobeViewer::RenderGlobe() {
 
     earthColorFramebuffer.Bind();
 
-    glViewport(0, 0, 1200, 800);
+    glViewport(0, 0, width(), height());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     globeShader.Bind();
@@ -152,7 +152,7 @@ void GlobeViewer::RenderBorders() {
 
     borderColorFramebuffer.Bind();
 
-    glViewport(0, 0, 1200, 800);
+    glViewport(0, 0, width(), height());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     borderShader.Bind();
@@ -173,7 +173,6 @@ void GlobeViewer::RenderScene() {
 void GlobeViewer::RenderComposite() {
 
     const qreal dpr = devicePixelRatioF();
-
     glViewport(0, 0, static_cast<GLsizei>(width() * dpr), static_cast<GLsizei>(height() * dpr));
 
     compositeShader.Bind();
