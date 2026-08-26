@@ -14,6 +14,7 @@ public:
     void Bind();
     void SetVec3(const char* name, const glm::vec3& value);
     void SetMat4(const char* name, const glm::mat4& value);
+    void SetInt(const char* name, int value);
 
 private:
     int program;

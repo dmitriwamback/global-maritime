@@ -42,6 +42,7 @@ void Texture::Load(const QString &path) {
 
 void Texture::Bind() const{
     auto* GL = QOpenGLContext::currentContext()->extraFunctions();
+    GL->glActiveTexture(GL_TEXTURE0);
     GL->glBindTexture(GL_TEXTURE_2D, textureID);
 }
 

@@ -50,6 +50,12 @@ void Shader::SetVec3(const char* name, const glm::vec3& value) {
     GL->glUniform3fv(uniform, 1, glm::value_ptr(value));
 }
 
+void Shader::SetInt(const char* name, int value) {
+    auto* GL = QOpenGLContext::currentContext()->extraFunctions();
+    unsigned int uniform = GL->glGetUniformLocation(program, name);
+    GL->glUniform1i(uniform, value);
+}
+
 unsigned int Shader::CompileShader(unsigned int type, const char *source) {
     auto* GL = QOpenGLContext::currentContext()->extraFunctions();
     unsigned int shader = GL->glCreateShader(type);

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <QApplication>
 #include <QMainWindow>
 #include <QHBoxLayout>
@@ -13,6 +14,7 @@ int main(int argc, char *argv[]) {
     format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setDepthBufferSize(24);
+    format.setSamples(4);
 
     QSurfaceFormat::setDefaultFormat(format);
 
@@ -23,6 +25,7 @@ int main(int argc, char *argv[]) {
     window.resize(1200, 800);
 
     auto* globeViewerWidget = new GlobeViewer();
+
     auto* centralWidget = new QWidget();
     auto* layout = new QHBoxLayout(centralWidget);
 

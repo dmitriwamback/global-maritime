@@ -28,6 +28,7 @@ public:
 
     glm::mat4 GetProjectionMatrix(float aspectRatio);
     glm::mat4 GetLookAtMatrix();
+    glm::vec3 GetDirection();
     float GetDistance();
     float GetYaw();
     float GetPitch();

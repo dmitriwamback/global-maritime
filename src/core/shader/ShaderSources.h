@@ -44,7 +44,7 @@ public:
 
         void main() {
 
-            float angle = 135.0;
+            float angle = 35.0;
             float angleRad = angle * 3.14159265 / 180.0;
 
             lightPosition = 10000.0 * vec3(sin(angleRad), 0.0, cos(angleRad));
@@ -74,7 +74,10 @@ public:
         uniform mat4 projection;
         uniform mat4 model;
 
+        out vec3 fragp;
+
         void main() {
+            fragp = (model * vec4(position, 1.0)).xyz;
             gl_Position = projection * lookAt * model * vec4(position, 1.0);
         }
     )";
@@ -83,9 +86,51 @@ public:
         #version 330 core
 
         out vec4 fragc;
+        in vec3 fragp;
+
+        uniform vec3 cameraDirection;
 
         void main() {
-            fragc = vec4(1.0);
+            vec3 norm = normalize(fragp);
+            if (dot(norm, normalize(cameraDirection)) >= 0.2) {
+                fragc = vec4(1.0);
+            }
+            else {
+                discard;
+            }
+        }
+    )";
+
+
+
+
+
+    static constexpr const char* COMPOSITE_VERTEX_SHADER_SOURCE = R"(
+        #version 330 core
+        layout(location = 0) in vec2 position;
+        layout(location = 1) in vec2 inUV;
+        out vec2 uv;
+
+        void main() {
+            uv = inUV;
+            gl_Position = vec4(position, 0.0, 1.0);
+        }
+    )";
+
+    static constexpr const char* COMPOSITE_FRAGMENT_SHADER_SOURCE = R"(
+        #version 330 core
+        out vec4 fragc;
+        in vec2 uv;
+
+        uniform sampler2D earthTexture;
+        uniform sampler2D borderTexture;
+
+        void main() {
+            vec3 earthColor = texture(earthTexture, uv).rgb;
+            vec4 borderColor = texture(borderTexture, uv);
+
+            vec3 composite = mix(earthColor, borderColor.rgb, borderColor.a);
+            fragc = vec4(composite, 1.0);
         }
     )";
 };

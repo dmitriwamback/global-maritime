@@ -14,6 +14,7 @@
 #include "../core/shader/ShaderSources.h"
 
 GlobeViewer::GlobeViewer() {
+
     auto* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&GlobeViewer::update));
     timer->start(16);
@@ -30,6 +31,14 @@ void GlobeViewer::initializeGL() {
     globe = Globe();
     globe.Generate();
 
+    earthColorFramebuffer = ColorFramebuffer();
+    borderColorFramebuffer = ColorFramebuffer();
+    sceneColorFramebuffer = ColorFramebuffer();
+
+    earthColorFramebuffer.Initialize();
+    borderColorFramebuffer.Initialize();
+    sceneColorFramebuffer.Initialize();
+
     borders = Borders();
     borders.Load("../res/world.geojson");
     borders.Initialize();
@@ -38,11 +47,17 @@ void GlobeViewer::initializeGL() {
     USA.Load("../res/world.geojson", "United States of America");
     USA.Initialize();
 
+    composite = Quad();
+    composite.Initialize();
+
     globeShader = Shader();
     globeShader.Create(ShaderSources::GLOBE_VERTEX_SHADER_SOURCE, ShaderSources::GLOBE_FRAGMENT_SHADER_SOURCE);
 
     borderShader = Shader();
     borderShader.Create(ShaderSources::BORDER_VERTEX_SHADER_SOURCE, ShaderSources::BORDER_FRAGMENT_SHADER_SOURCE);
+
+    compositeShader = Shader();
+    compositeShader.Create(ShaderSources::COMPOSITE_VERTEX_SHADER_SOURCE, ShaderSources::COMPOSITE_FRAGMENT_SHADER_SOURCE);
 }
 
 void GlobeViewer::paintGL() {
@@ -51,35 +66,20 @@ void GlobeViewer::paintGL() {
 
     camera.Update();
 
-    globeShader.Bind();
-    glm::mat4 projectionMatrix = camera.GetProjectionMatrix(aspectRatio);
-    glm::mat4 lookAtMatrix = camera.GetLookAtMatrix();
+    RenderBorders();
+    RenderGlobe();
+    RenderComposite();
 
-    globeShader.SetMat4("projection", projectionMatrix);
-    globeShader.SetMat4("lookAt", lookAtMatrix);
-    globe.Render();
-
-    float dy = borders.MAX_RADIUS - borders.MIN_RADIUS;
-    float dx = camera.ZOOM_MAX - camera.ZOOM_MIN;
-
-    float slope = dy/dx;
-    float b = borders.MAX_RADIUS - camera.ZOOM_MAX * slope;
-
-    float radius = slope * camera.GetDistance() + b;
-
-    glm::mat4 borderModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(radius));
-
-    borderShader.Bind();
-    borderShader.SetMat4("projection", projectionMatrix);
-    borderShader.SetMat4("lookAt", lookAtMatrix);
-    borderShader.SetMat4("model", borderModelMatrix);
-
-    borders.Render();
     //USA.Render();
 }
 
 void GlobeViewer::resizeGL(int width, int height) {
     aspectRatio = (float)width / (float)height;
+
+    earthColorFramebuffer.Update(width, height);
+    sceneColorFramebuffer.Update(width, height);
+    borderColorFramebuffer.Update(width, height);
+
     glViewport(0, 0, width, height);
 }
 
@@ -123,4 +123,69 @@ void GlobeViewer::wheelEvent(QWheelEvent* event) {
     const float delta = static_cast<float>(event->angleDelta().y());
     camera.Zoom(delta);
     update();
+}
+
+void GlobeViewer::RenderGlobe() {
+
+    glm::mat4 projectionMatrix = camera.GetProjectionMatrix(aspectRatio);
+    glm::mat4 lookAtMatrix = camera.GetLookAtMatrix();
+
+    earthColorFramebuffer.Bind();
+
+    glViewport(0, 0, 1200, 800);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    globeShader.Bind();
+    globeShader.SetMat4("projection", projectionMatrix);
+    globeShader.SetMat4("lookAt", lookAtMatrix);
+    globe.Render();
+
+    earthColorFramebuffer.Unbind();
+}
+
+void GlobeViewer::RenderBorders() {
+
+    glm::mat4 projectionMatrix = camera.GetProjectionMatrix(aspectRatio);
+    glm::mat4 lookAtMatrix = camera.GetLookAtMatrix();
+
+    glm::mat4 borderModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(500.0f));
+
+    borderColorFramebuffer.Bind();
+
+    glViewport(0, 0, 1200, 800);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    borderShader.Bind();
+    borderShader.SetMat4("projection", projectionMatrix);
+    borderShader.SetMat4("lookAt", lookAtMatrix);
+    borderShader.SetMat4("model", borderModelMatrix);
+    borderShader.SetVec3("cameraDirection", camera.GetDirection());
+
+    borders.Render();
+
+    borderColorFramebuffer.Unbind();
+}
+
+void GlobeViewer::RenderScene() {
+
+}
+
+void GlobeViewer::RenderComposite() {
+
+    const qreal dpr = devicePixelRatioF();
+
+    glViewport(0, 0, static_cast<GLsizei>(width() * dpr), static_cast<GLsizei>(height() * dpr));
+
+    compositeShader.Bind();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, earthColorFramebuffer.GetColorTextureId());
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, borderColorFramebuffer.GetColorTextureId());
+
+    compositeShader.SetInt("earthTexture", 0);
+    compositeShader.SetInt("borderTexture", 1);
+
+    composite.Render();
 }

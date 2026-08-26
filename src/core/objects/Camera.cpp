@@ -33,6 +33,10 @@ glm::mat4 Camera::GetLookAtMatrix() {
     return glm::lookAt(position, lookAt, up);
 }
 
+glm::vec3 Camera::GetDirection() {
+    return position - lookAt;
+}
+
 float Camera::GetDistance() {
     return distance;
 }
