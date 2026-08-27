@@ -4,7 +4,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
-#include "src/widgets/GlobeViewer.h"
+#include "src/widgets/EarthRenderer.h"
 
 int main(int argc, char *argv[]) {
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     window.setWindowTitle("Global Maritime");
     window.resize(1200, 800);
 
-    auto* globeViewerWidget = new GlobeViewer();
+    auto* globeViewerWidget = new EarthRenderer();
 
     auto* centralWidget = new QWidget();
     auto* layout = new QHBoxLayout(centralWidget);

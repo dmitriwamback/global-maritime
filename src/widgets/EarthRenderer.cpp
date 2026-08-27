@@ -2,7 +2,7 @@
 // Created by Dmitri on 2026-08-15.
 //
 
-#include "GlobeViewer.h"
+#include "EarthRenderer.h"
 
 #include <iostream>
 #include <QTimer>
@@ -13,14 +13,14 @@
 
 #include "../core/shader/ShaderSources.h"
 
-GlobeViewer::GlobeViewer() {
+EarthRenderer::EarthRenderer() {
 
     auto* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, QOverload<>::of(&GlobeViewer::update));
+    connect(timer, &QTimer::timeout, this, QOverload<>::of(&EarthRenderer::update));
     timer->start(16);
 }
 
-void GlobeViewer::initializeGL() {
+void EarthRenderer::initializeGL() {
     initializeOpenGLFunctions();
 
     glEnable(GL_DEPTH_TEST);
@@ -34,10 +34,12 @@ void GlobeViewer::initializeGL() {
     earthColorFramebuffer = ColorFramebuffer();
     borderColorFramebuffer = ColorFramebuffer();
     sceneColorFramebuffer = ColorFramebuffer();
+    countryPolygonsColorFramebuffer = ColorFramebuffer();
 
     earthColorFramebuffer.Initialize();
     borderColorFramebuffer.Initialize();
     sceneColorFramebuffer.Initialize();
+    countryPolygonsColorFramebuffer.Initialize();
 
     borders = Borders();
     borders.Load("../res/world.geojson");
@@ -46,6 +48,8 @@ void GlobeViewer::initializeGL() {
     USA = CountryPolygons();
     USA.Load("../res/world.geojson", "United States of America");
     USA.Initialize();
+
+    earthTilt = RotationMatrixDegrees(glm::vec3(0, 0, 0));
 
     composite = Quad();
     composite.Initialize();
@@ -60,7 +64,7 @@ void GlobeViewer::initializeGL() {
     compositeShader.Create(ShaderSources::COMPOSITE_VERTEX_SHADER_SOURCE, ShaderSources::COMPOSITE_FRAGMENT_SHADER_SOURCE);
 }
 
-void GlobeViewer::paintGL() {
+void EarthRenderer::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
@@ -68,12 +72,13 @@ void GlobeViewer::paintGL() {
 
     RenderBorders();
     RenderGlobe();
+    //RenderCountryPolygons();
     RenderComposite();
 
-    //USA.Render();
+    debugRotation = 0.0f;
 }
 
-void GlobeViewer::resizeGL(int width, int height) {
+void EarthRenderer::resizeGL(int width, int height) {
     aspectRatio = (float)width / (float)height;
 
     earthColorFramebuffer.Update(width, height);
@@ -83,13 +88,13 @@ void GlobeViewer::resizeGL(int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void GlobeViewer::mousePressEvent(QMouseEvent* event) {
+void EarthRenderer::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         lastMousePosition = event->position().toPoint();
     }
 }
 
-void GlobeViewer::mouseMoveEvent(QMouseEvent* event) {
+void EarthRenderer::mouseMoveEvent(QMouseEvent* event) {
 
     if (!(event->buttons() & Qt::LeftButton)) {
         return;
@@ -119,13 +124,13 @@ void GlobeViewer::mouseMoveEvent(QMouseEvent* event) {
     camera.Rotate(-delta.x() * sensitivity, delta.y() * sensitivity);
 }
 
-void GlobeViewer::wheelEvent(QWheelEvent* event) {
+void EarthRenderer::wheelEvent(QWheelEvent* event) {
     const float delta = static_cast<float>(event->angleDelta().y());
     camera.Zoom(delta);
     update();
 }
 
-void GlobeViewer::RenderGlobe() {
+void EarthRenderer::RenderGlobe() {
 
     glm::mat4 projectionMatrix = camera.GetProjectionMatrix(aspectRatio);
     glm::mat4 lookAtMatrix = camera.GetLookAtMatrix();
@@ -135,20 +140,25 @@ void GlobeViewer::RenderGlobe() {
     glViewport(0, 0, width(), height());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glm::mat4 rotationMatrix = RotationMatrixDegrees(glm::vec3(0, debugRotation, 0));
+    glm::mat4 model = earthTilt * rotationMatrix;
+
     globeShader.Bind();
     globeShader.SetMat4("projection", projectionMatrix);
     globeShader.SetMat4("lookAt", lookAtMatrix);
+    globeShader.SetMat4("model", model);
     globe.Render();
 
     earthColorFramebuffer.Unbind();
 }
 
-void GlobeViewer::RenderBorders() {
+void EarthRenderer::RenderBorders() {
 
     glm::mat4 projectionMatrix = camera.GetProjectionMatrix(aspectRatio);
     glm::mat4 lookAtMatrix = camera.GetLookAtMatrix();
 
-    glm::mat4 borderModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(500.0f));
+    glm::mat4 rotationMatrix = RotationMatrixDegrees(glm::vec3(0, debugRotation, 0));
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(500.0f)) * earthTilt * rotationMatrix;
 
     borderColorFramebuffer.Bind();
 
@@ -158,7 +168,7 @@ void GlobeViewer::RenderBorders() {
     borderShader.Bind();
     borderShader.SetMat4("projection", projectionMatrix);
     borderShader.SetMat4("lookAt", lookAtMatrix);
-    borderShader.SetMat4("model", borderModelMatrix);
+    borderShader.SetMat4("model", model);
     borderShader.SetVec3("cameraDirection", camera.GetDirection());
 
     borders.Render();
@@ -166,11 +176,35 @@ void GlobeViewer::RenderBorders() {
     borderColorFramebuffer.Unbind();
 }
 
-void GlobeViewer::RenderScene() {
+void EarthRenderer::RenderCountryPolygons() {
+
+    glm::mat4 projectionMatrix = camera.GetProjectionMatrix(aspectRatio);
+    glm::mat4 lookAtMatrix = camera.GetLookAtMatrix();
+
+    glm::mat4 rotationMatrix = RotationMatrixDegrees(glm::vec3(0, debugRotation, 0));
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(500.0f)) * earthTilt * rotationMatrix;
+
+    countryPolygonsColorFramebuffer.Bind();
+
+    glViewport(0, 0, width(), height());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    borderShader.Bind();
+    borderShader.SetMat4("projection", projectionMatrix);
+    borderShader.SetMat4("lookAt", lookAtMatrix);
+    borderShader.SetMat4("model", model);
+    borderShader.SetVec3("cameraDirection", camera.GetDirection());
+
+    USA.Render();
+
+    countryPolygonsColorFramebuffer.Unbind();
+}
+
+void EarthRenderer::RenderScene() {
 
 }
 
-void GlobeViewer::RenderComposite() {
+void EarthRenderer::RenderComposite() {
 
     const qreal dpr = devicePixelRatioF();
     glViewport(0, 0, static_cast<GLsizei>(width() * dpr), static_cast<GLsizei>(height() * dpr));
@@ -183,8 +217,12 @@ void GlobeViewer::RenderComposite() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, borderColorFramebuffer.GetColorTextureId());
 
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, countryPolygonsColorFramebuffer.GetColorTextureId());
+
     compositeShader.SetInt("earthTexture", 0);
     compositeShader.SetInt("borderTexture", 1);
+    compositeShader.SetInt("countryPolygonsTexture", 2);
 
     composite.Render();
 }

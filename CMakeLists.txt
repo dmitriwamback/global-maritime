@@ -11,8 +11,8 @@ find_package(Qt6 REQUIRED COMPONENTS
 find_package(glm REQUIRED)
 
 qt_add_executable(global_maritime main.cpp
-        src/widgets/GlobeViewer.cpp
-        src/widgets/GlobeViewer.h
+        src/widgets/EarthRenderer.cpp
+        src/widgets/EarthRenderer.h
         src/core/shader/Shader.cpp
         src/core/shader/Shader.h
         src/core/shader/ShaderSources.cpp

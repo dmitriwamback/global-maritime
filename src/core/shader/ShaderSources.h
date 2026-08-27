@@ -17,6 +17,7 @@ public:
 
         uniform mat4 lookAt;
         uniform mat4 projection;
+        uniform mat4 model;
 
         out vec2 uv;
         out vec3 normal;
@@ -24,9 +25,9 @@ public:
 
         void main() {
             uv = inUV;
-            normal = inNormal;
-            fragp = position;
-            gl_Position = projection * lookAt * vec4(position, 1.0);
+            normal = (model * vec4(inNormal, 1.0)).rgb;
+            fragp = (model * vec4(position, 1.0)).rgb;
+            gl_Position = projection * lookAt * model * vec4(position, 1.0);
         }
     )";
 
@@ -40,24 +41,37 @@ public:
         uniform sampler2D globeTexture;
         out vec4 fragc;
 
-        vec3 lightPosition = vec3(10000.0, 0.0, 0.0);
+        vec3 lightPosition = vec3(0.0, 0.0, 100000.0);
+
+        vec3 sharpenTexture(sampler2D tex, vec2 uv) {
+            vec2 texel = 1.0 / vec2(textureSize(tex, 0));
+
+            vec3 center = texture(tex, uv).rgb;
+
+            vec3 blur =
+                texture(tex, uv + vec2( texel.x, 0.0)).rgb +
+                texture(tex, uv + vec2(-texel.x, 0.0)).rgb +
+                texture(tex, uv + vec2(0.0,  texel.y)).rgb +
+                texture(tex, uv + vec2(0.0, -texel.y)).rgb;
+
+            blur *= 0.25;
+
+            float strength = 3.0;
+
+            return center + (center - blur) * strength;
+        }
 
         void main() {
 
-            float angle = 35.0;
-            float angleRad = angle * 3.14159265 / 180.0;
-
-            lightPosition = 10000.0 * vec3(sin(angleRad), 0.0, cos(angleRad));
-
-            vec3 physical = texture(globeTexture, uv).rgb;
-            float luminance = dot(physical, vec3(0.299, 0.587, 0.114));
+            vec3 physical = sharpenTexture(globeTexture, uv);
 
             vec3 L = normalize(lightPosition - fragp);
+            float luminance = dot(physical, vec3(0.299, 0.587, 0.114));
 
             float diffuse = max(dot(normal, L), 0.1);
 
-            physical = mix(vec3(luminance), physical, 0.6);
-            fragc = vec4(physical * diffuse, 1.0);
+            physical = mix(vec3(luminance), physical, 0.4);
+            fragc = vec4(physical, 1.0);
         }
     )";
 
@@ -124,12 +138,16 @@ public:
 
         uniform sampler2D earthTexture;
         uniform sampler2D borderTexture;
+        uniform sampler2D countryPolygonsTexture;
 
         void main() {
             vec3 earthColor = texture(earthTexture, uv).rgb;
             vec4 borderColor = texture(borderTexture, uv);
+            vec4 polygonColor = texture(countryPolygonsTexture, uv);
 
-            vec3 composite = earthColor + borderColor.rgb * 1.5;
+            vec3 composite = mix(earthColor, borderColor.rgb * 5.0, borderColor.a);
+            composite = mix(composite, polygonColor.rgb * 5.0, polygonColor.a);
+
             fragc = vec4(composite, 1.0);
         }
     )";

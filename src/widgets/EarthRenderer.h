@@ -17,9 +17,9 @@
 #include "../core/renderpasses/Quad.h"
 
 
-class GlobeViewer : public QOpenGLWidget, protected QOpenGLFunctions {
+class EarthRenderer : public QOpenGLWidget, protected QOpenGLFunctions {
 public:
-    GlobeViewer();
+    EarthRenderer();
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -38,18 +38,21 @@ private:
 
     Camera camera;
     float aspectRatio = 1;
+    float debugRotation = 0.0f;
+
+    glm::mat4 earthTilt;
 
     void RenderGlobe();
     void RenderBorders();
     void RenderScene();
-    //void RenderCountryPolygons();
+    void RenderCountryPolygons();
     void RenderComposite();
 
     QPoint lastMousePosition;
     CountryPolygons USA;
 
     DepthFramebuffer earthDepthFramebuffer, sceneDepthFramebuffer;
-    ColorFramebuffer earthColorFramebuffer, sceneColorFramebuffer, borderColorFramebuffer;
+    ColorFramebuffer earthColorFramebuffer, sceneColorFramebuffer, borderColorFramebuffer, countryPolygonsColorFramebuffer;
 };
 
 
