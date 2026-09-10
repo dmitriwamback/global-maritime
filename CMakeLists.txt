@@ -7,6 +7,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Widgets
     OpenGL
     OpenGLWidgets
+    Network
 )
 find_package(glm REQUIRED)
 
@@ -33,11 +34,14 @@ qt_add_executable(global_maritime main.cpp
         src/core/renderpasses/DepthFramebuffer.cpp
         src/core/renderpasses/DepthFramebuffer.h
         src/core/renderpasses/Quad.cpp
-        src/core/renderpasses/Quad.h)
+        src/core/renderpasses/Quad.h
+        src/core/util/GDELT.cpp
+        src/core/util/GDELT.h)
 
 target_link_libraries(global_maritime PRIVATE
     Qt6::Widgets
     Qt6::OpenGL
     Qt6::OpenGLWidgets
+    Qt6::Network
     glm::glm
 )

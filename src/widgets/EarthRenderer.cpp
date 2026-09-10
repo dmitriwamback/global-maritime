@@ -12,6 +12,7 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "../core/shader/ShaderSources.h"
+#include "../core/util/GDELT.h"
 
 EarthRenderer::EarthRenderer() {
 
@@ -22,6 +23,13 @@ EarthRenderer::EarthRenderer() {
 
 void EarthRenderer::initializeGL() {
     initializeOpenGLFunctions();
+
+    GDELT::Search("ship hijacking", [](const QList<MaritimeIncident>& incidents) {
+        for (const auto& incident : incidents) {
+            qDebug() << incident.desc;
+            qDebug() << incident.source;
+        }
+    });
 
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0, 0.0, 0.0, 0.0);
